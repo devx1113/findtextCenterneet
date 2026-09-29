@@ -6,12 +6,12 @@ import os
 
 from util_func import width, height, scale, feature_dim, sigmoid
 
-print('load')
+print('読み込み')
 if os.path.exists("TextDetector.quant.onnx"):
-    print('quant')
+    print('量子化モデル')
     onnx_detector = onnxruntime.InferenceSession("TextDetector.quant.onnx")
 elif os.path.exists("TextDetector.infer.onnx"):
-    print('infer')
+    print('推論')
     onnx_detector = onnxruntime.InferenceSession("TextDetector.infer.onnx")
 else:
     onnx_detector = onnxruntime.InferenceSession("TextDetector.onnx")
@@ -63,7 +63,7 @@ def imageHist(im):
 
 def eval(ds, org_img, cut_off = 0.5):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -255,7 +255,7 @@ def call_model(im):
 
     locations, glyphfeatures, lines, seps = eval(ds0, im, cut_off=0.4)
 
-    print('construct data')
+    print('データを構築')
     h, w = lines.shape
     input_binary = int(0).to_bytes(4, 'little')
     input_binary += int(w).to_bytes(4, 'little')
@@ -265,7 +265,7 @@ def call_model(im):
     input_binary += int(locations.shape[0]).to_bytes(4, 'little')
     input_binary += locations[:,1:].tobytes()
 
-    print('run')
+    print('実行')
     result = subprocess.run('../textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
     detected_boxes = []
     p = 0

@@ -18,11 +18,11 @@ def convert3():
         config = ModelDimensions(**data['config'])
         model = Transformer(**config.__dict__)
         model.load_state_dict(data['model_state_dict'])
-        print('loaded')
+        print('読み込み済み')
     else:
         config = ModelDimensions()
         model = Transformer(**config.__dict__)
-        print('empty model')
+        print('空のモデル')
     model.eval()
     encoder = TransformerEncoderPredictor(model.encoder)
     decoder = TransformerDecoderPredictor(model.decoder)
@@ -30,7 +30,7 @@ def convert3():
     decoder.eval()
 
     #########################################################################
-    print('encoder')
+    print('エンコーダー')
 
     encoder_dim = feature_dim+encoder_add_dim
     encoder_input = torch.rand(1, max_encoderlen, encoder_dim)
@@ -44,7 +44,7 @@ def convert3():
                       output_names=['encoder_output'])
 
     ############################################################################
-    print('decoder')
+    print('デコーダー')
 
     encoder_output = torch.rand(1, max_encoderlen, config.embed_dim)
     decoder_input = torch.randint(0, 1000, size=(1, max_decoderlen), dtype=torch.long)
@@ -56,19 +56,19 @@ def convert3():
                       output_names=['modulo_%d'%m for m in modulo_list])
 
 def test3():
-    print('load')
+    print('読み込み')
     onnx_encoder = onnxruntime.InferenceSession("TransformerEncoder.onnx")
     onnx_decoder = onnxruntime.InferenceSession("TransformerDecoder.onnx")
 
-    print(' [ encoder ] ')
-    print('input:')
+    print(' [ エンコーダー ] ')
+    print('入力:')
     for session_input in onnx_encoder.get_inputs():
         print(session_input.name, session_input.shape)
-    print('output:')
+    print('出力:')
     for session_output in onnx_encoder.get_outputs():
         print(session_output.name, session_output.shape)
 
-    print(' [ decoder ] ')
+    print(' [ デコーダー ] ')
     print('input:')
     for session_input in onnx_decoder.get_inputs():
         print(session_input.name, session_input.shape)
@@ -97,7 +97,7 @@ def test3():
     print('encoder')
     encoder_output, = onnx_encoder.run(['encoder_output'], {'encoder_input': encoder_input, 'key_mask': key_mask})
 
-    print('decoder')
+    print('デコーダー')
     decoder_input = np.zeros(shape=(1, max_decoderlen), dtype=np.int64)
     decoder_input[0,0] = decoder_SOT
     decoder_input[0,1:] = decoder_MSK

@@ -37,27 +37,27 @@ if len(sys.argv) > 2:
     for arg in sys.argv[2:]:
         if arg == 'twopass':
             twopass = True
-            print('twopass')
+            print('2回処理')
         elif arg == 'kr':
             fprop = FontProperties(fname='data/krfont/NotoSerifKR-Regular.otf')
-            print('kr font')
+            print('韓国語フォント')
         elif arg == 'verbose':
             verbose = True
-            print('verbose')
+            print('詳細表示')
         elif arg.startswith('x'):
             resize = float(arg[1:])
-            print('resize: ', resize)
+            print('リサイズ: ', resize)
         elif arg.startswith('offsetx'):
             offsetx = int(arg[7:])
-            print('offsetx: ', offsetx)
+            print('X方向オフセット: ', offsetx)
         elif arg.startswith('offsety'):
             offsety = int(arg[7:])
-            print('offsety: ', offsety)
+            print('Y方向オフセット: ', offsety)
         elif arg.startswith('cutoff'):
             cutoff = float(arg[6:])
-            print('cutoff: ', cutoff)
+            print('閾値: ', cutoff)
 
-print('load')
+print('読み込み')
 mlmodel_detector = ct.models.MLModel('TextDetector.mlpackage')
 mlmodel_decoder = ct.models.MLModel('CodeDecoder.mlpackage')
 
@@ -105,7 +105,7 @@ def imageHist(im):
 
 def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -326,7 +326,7 @@ def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     return locations.astype(np.float32), glyphfeatures, lines_all, seps_all
 
 def decode(glyphfeatures):
-    print("decode")
+    print("デコード")
     glyphids = []
     glyphprobs = []
     for data in glyphfeatures:
@@ -390,7 +390,7 @@ im1[offsety:-(pady+1),offsetx:-(padx+1),:] = im0[offsety:-(pady+1),offsetx:-(pad
 im0 = im1
 
 if twopass and (im0.shape[1] / stepx > 2 or im0.shape[0] / stepy > 2):
-    print('two-pass')
+    print('2回処理')
     s = max(im0.shape[1], im0.shape[0]) / max(width, height)
     im1 = Image.fromarray(im0).resize((int(im0.shape[1] / s), int(im0.shape[0] / s)), resample=Image.BILINEAR)
     im1 = np.asarray(im1)
@@ -497,7 +497,7 @@ if verbose:
             plt.gca().text(cx, cy, pred_char, fontsize=28, color=c, fontproperties=fprop)
         plt.gca().text(cx - w/2, cy + h/2, '%.2f'%(p*100), color='green')
 else:
-    print('construct data')
+    print('データを構築')
     h, w = lines.shape
     input_binary = int(0).to_bytes(4, 'little')
     input_binary += int(w).to_bytes(4, 'little')
@@ -507,7 +507,7 @@ else:
     input_binary += int(locations.shape[0]).to_bytes(4, 'little')
     input_binary += locations[:,1:].tobytes()
 
-    print('run')
+    print('実行')
     result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
     detected_boxes = []
     p = 0

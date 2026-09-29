@@ -35,9 +35,9 @@ target_file = sys.argv[1]
 resize = 1.0
 if len(sys.argv) > 2:
     resize = float(sys.argv[2])
-    print('resize: ', resize)
+    print('リサイズ: ', resize)
 
-print('load')
+print('読み込み')
 mlmodel_detector = ct.models.MLModel('TextDetector.mlpackage', compute_units=ct.ComputeUnit.CPU_ONLY)
 
 mlmodel_transformer_encoder = ct.models.MLModel('TransformerEncoder.mlpackage')
@@ -87,7 +87,7 @@ def imageHist(im):
 
 def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -394,7 +394,7 @@ def output_process1(output, i):
     prob,id = g[0]
     return id
 
-print('construct data')
+print('データを構築')
 h, w = lines.shape
 input_binary = int(0).to_bytes(4, 'little')
 input_binary += int(w).to_bytes(4, 'little')
@@ -404,7 +404,7 @@ input_binary += seps.tobytes()
 input_binary += int(locations.shape[0]).to_bytes(4, 'little')
 input_binary += locations[:,1:].tobytes()
 
-print('run')
+print('実行')
 result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
 detected_boxes = []
 p = 0

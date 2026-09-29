@@ -324,7 +324,7 @@ class TransformerPredictor(nn.Module):
             # print(pred_p[decoder_output > 0])
             # decoder_output = torch.where(decoder_input == decoder_MSK, decoder_output, decoder_input)
             if torch.all(pred_p[torch.logical_and(decoder_input == decoder_MSK, decoder_output > 0)] > 0.99):
-                print(f'[{k} early stop]')
+                print(f'[{k} 早期終了]')
                 break
             # print(decoder_output)
             # pred = decoder_output.squeeze(0).cpu().numpy()
@@ -354,7 +354,7 @@ class TransformerPredictor(nn.Module):
                 remask = torch.logical_or(remask, decoder_output > 0x3FFFF)
                 # remask = torch.logical_or(remask, decoder_output == decoder_PAD)
                 if not torch.any(remask):
-                    print(f'[{k} no remask stop]')
+                    print(f'[{k} 再マスクなしで終了]')
                     break
                 decoder_input[:,:] = torch.where(remask, decoder_MSK, decoder_output)
         return decoder_output

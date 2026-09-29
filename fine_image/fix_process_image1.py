@@ -28,10 +28,10 @@ if len(sys.argv) > 2:
     for arg in sys.argv[2:]:
         if arg == 'kr':
             fprop = FontProperties(fname='data/krfont/NotoSerifKR-Regular.otf')
-            print('kr font')
+            print('韓国語フォント')
         elif arg.startswith('dpi'):
             dpi = int(arg[3:])
-            print('dpi:', dpi)
+            print('解像度:', dpi)
 
 class SubWindow(tk.Frame):
     def __init__(self, root, im0, dict, x, y, refresh, closing):

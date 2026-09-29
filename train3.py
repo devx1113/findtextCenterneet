@@ -98,7 +98,7 @@ def train():
     validation_dataset = TransformerDataDataset(*prep, train=False)
     validation_loader = DataLoader(validation_dataset, batch_size=batch, num_workers=num_workers, drop_last=True, pin_memory=True)
 
-    print('using device:', device, flush=True)
+    print('使用デバイス:', device, flush=True)
     with open('log.txt','w') as wf:
         print(datetime.datetime.now(), 'using device:', device, file=wf, flush=True)
 
@@ -108,7 +108,7 @@ def train():
         model = Transformer(**config.__dict__)
         model.load_state_dict(data['model_state_dict'])
         last_epoch = data['epoch']
-        print('loaded', last_epoch, 'epoch', flush=True)
+        print('読み込み済み', last_epoch, 'エポック', flush=True)
         last_epoch += 1
     else:
         config = ModelDimensions()
@@ -140,11 +140,11 @@ def train():
             rawloss = loss_function3(outputs, label_code, decoder_input == decoder_MSK)
         return rawloss['loss'], rawloss
 
-    print('batch', batch, flush=True)
-    print('logstep', logstep, flush=True)
+    print('バッチサイズ', batch, flush=True)
+    print('ログ間隔', logstep, flush=True)
     with open('log.txt','a') as wf:
-        print('batch', batch, file=wf, flush=True)
-        print('logstep', logstep, file=wf, flush=True)
+        print('バッチサイズ', batch, file=wf, flush=True)
+        print('ログ間隔', logstep, file=wf, flush=True)
     loader_len = len(training_loader)
 
     denoise_epoch = -1

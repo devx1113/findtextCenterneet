@@ -23,7 +23,7 @@ def convert1():
     decoder.eval()
 
     #########################################################################
-    print('detector')
+    print('検出器')
 
     example_input = torch.rand(1, 3, height, width)
     torch.onnx.export(detector,
@@ -39,7 +39,7 @@ def convert1():
     onnx.checker.check_model('TextDetector.onnx')
 
     ############################################################################
-    print('decoder')
+    print('デコーダー')
 
     example_input = torch.rand(1, feature_dim)
     torch.onnx.export(decoder,
@@ -58,7 +58,7 @@ def cos_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
 def test_model():
-    print('test')
+    print('テスト')
     plt.figure()
     plt.text(0.1,0.9,'test', fontsize=32)
     plt.axis('off')
@@ -77,19 +77,19 @@ def test_model():
     image_input = np.expand_dims(image_input, 0).transpose(0,3,1,2) / 255
     print(image_input.shape)
 
-    print('load')
+    print('読み込み')
     onnx_detector = onnxruntime.InferenceSession("TextDetector.onnx")
     onnx_decoder = onnxruntime.InferenceSession("CodeDecoder.onnx")
 
-    print(' [ detector ] ')
-    print('input:')
+    print(' [ 検出器 ] ')
+    print('入力:')
     for session_input in onnx_detector.get_inputs():
         print(session_input.name, session_input.shape)
-    print('output:')
+    print('出力:')
     for session_output in onnx_detector.get_outputs():
         print(session_output.name, session_output.shape)
 
-    print(' [ decoder ] ')
+    print(' [ デコーダー ] ')
     print('input:')
     for session_input in onnx_decoder.get_inputs():
         print(session_input.name, session_input.shape)

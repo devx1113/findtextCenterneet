@@ -30,21 +30,21 @@ cutoff = 0.4
 for arg in sys.argv[1:]:
     if arg.startswith('--cutoff='):
         cutoff = float(arg.split('=')[1])
-        print('cutoff: ', cutoff)
+        print('閾値: ', cutoff)
     elif arg.startswith('--resize='):
         resize = float(arg.split('=')[1])
-        print('resize: ', resize)
+        print('リサイズ: ', resize)
     elif arg.startswith('--model='):
         model_size = arg.split('=')[1]
-        print('model_size: ', model_size)
+        print('モデルサイズ: ', model_size)
         if model_size == 's':
-            print('model s')
+            print('モデル S')
         elif model_size == 'm':
-            print('model m')
+            print('モデル M')
         elif model_size == 'l':
-            print('model l')
+            print('モデル L')
         elif model_size == 'xl':
-            print('model xl')
+            print('モデル XL')
         else:
             exit(1)
     else:
@@ -52,7 +52,7 @@ for arg in sys.argv[1:]:
 
 target_files = sorted(target_files)
 
-print('load')
+print('読み込み')
 model = TextDetectorModel(model_size=model_size)
 data = torch.load('model.pt', map_location="cpu", weights_only=True)
 model.load_state_dict(data['model_state_dict'])
@@ -69,7 +69,7 @@ detector.eval()
 
 def eval(ds, org_img, centers):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     glyphfeatures = np.zeros([centers.shape[0], feature_dim], dtype=np.float32)
 
@@ -112,7 +112,7 @@ for target_file in target_files:
         data = json.load(file)
     textbox = data['textbox']
     if len(textbox) == 0:
-        print('empty')
+        print('空です')
         continue
 
     locations = []
@@ -128,7 +128,7 @@ for target_file in target_files:
         locations.append([cx,cy,w,h,code1,code2,code4,code8])
     locations = np.array(locations, dtype=np.float32)
 
-    print('construct data')
+    print('データを構築')
     h, w = lines.shape
     input_binary = int(0).to_bytes(4, 'little')
     input_binary += int(w).to_bytes(4, 'little')
@@ -138,7 +138,7 @@ for target_file in target_files:
     input_binary += int(locations.shape[0]).to_bytes(4, 'little')
     input_binary += locations.tobytes()
 
-    print('run')
+    print('実行')
     result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
     detected_boxes = []
     p = 0

@@ -86,7 +86,7 @@ class OCR_Processer(ABC):
         input_binary += int(locations.shape[0]).to_bytes(4, 'little')
         input_binary += locations[:,1:].tobytes()
 
-        print('run')
+        print('実行')
         result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
         detected_boxes = []
         p = 0
@@ -473,7 +473,7 @@ class OCR_Processer(ABC):
 
     def run_detector(self, ds, org_img):
         print(org_img.shape)
-        print("test")
+        print("テスト")
 
         locations = [np.zeros(5+4)]
         glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]

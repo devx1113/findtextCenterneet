@@ -26,7 +26,7 @@ if len(sys.argv) > 2:
     for arg in sys.argv[2:]:
         if arg.startswith('dpi'):
             dpi = int(arg[3:])
-            print('dpi:', dpi)
+            print('解像度:', dpi)
         else:
             linetype = arg
 

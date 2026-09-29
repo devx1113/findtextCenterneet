@@ -29,16 +29,16 @@ cutoff = 0.4
 for arg in sys.argv[1:]:
     if arg.startswith('--cutoff='):
         cutoff = float(arg.split('=')[1])
-        print('cutoff: ', cutoff)
+        print('閾値: ', cutoff)
     elif arg.startswith('--resize='):
         resize = float(arg.split('=')[1])
-        print('resize: ', resize)
+        print('リサイズ: ', resize)
     else:
         target_files += glob.glob(arg)
 
 target_files = sorted(target_files)
 
-print('load')
+print('読み込み')
 mlmodel_detector = ct.models.MLModel('TextDetector.mlpackage')
 mlmodel_decoder = ct.models.MLModel('CodeDecoder.mlpackage')
 
@@ -86,7 +86,7 @@ def imageHist(im):
 
 def eval(ds, org_img, cut_off = 0.5):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -272,7 +272,7 @@ def eval(ds, org_img, cut_off = 0.5):
     return locations.astype(np.float32), glyphfeatures, lines_all, seps_all
 
 def decode(glyphfeatures):
-    print("decode")
+    print("デコード")
     glyphids = []
     glyphprobs = []
     for data in glyphfeatures:
@@ -341,7 +341,7 @@ for target_file in target_files:
     seps_all = (seps * 255).astype(np.uint8)
     Image.fromarray(seps_all).save(sepsfile)
 
-    print('construct data')
+    print('データを構築')
     h, w = lines.shape
     input_binary = int(0).to_bytes(4, 'little')
     input_binary += int(w).to_bytes(4, 'little')
@@ -351,7 +351,7 @@ for target_file in target_files:
     input_binary += int(locations.shape[0]).to_bytes(4, 'little')
     input_binary += locations[:,1:].tobytes()
 
-    print('run')
+    print('実行')
     result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
     detected_boxes = []
     p = 0

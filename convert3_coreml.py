@@ -19,11 +19,11 @@ def convert3():
         config = ModelDimensions(**data['config'])
         model = Transformer(**config.__dict__)
         model.load_state_dict(data['model_state_dict'])
-        print('loaded')
+        print('読み込み済み')
     else:
         config = ModelDimensions()
         model = Transformer(**config.__dict__)
-        print('empty model')
+        print('空のモデル')
     model.eval()
     encoder = TransformerEncoderPredictor(model.encoder)
     decoder = TransformerDecoderPredictor(model.decoder)
@@ -32,7 +32,7 @@ def convert3():
 
 
     #########################################################################
-    print('encoder')
+    print('エンコーダー')
 
     encoder_dim = feature_dim+encoder_add_dim
     encoder_input = torch.rand(1, max_encoderlen, encoder_dim)
@@ -59,7 +59,7 @@ def convert3():
     mlmodel_detector.save("TransformerEncoder.mlpackage")
 
     ############################################################################
-    print('decoder')
+    print('デコーダー')
 
     encoder_output = torch.rand(1, max_encoderlen, config.embed_dim)
     decoder_input = torch.randint(0, 1000, size=(1, max_decoderlen), dtype=torch.long)
@@ -84,7 +84,7 @@ def convert3():
     mlmodel_decoder.save("TransformerDecoder.mlpackage")
 
 def test3():
-    print('load')
+    print('読み込み')
     mlmodel_encoder = ct.models.MLModel('TransformerEncoder.mlpackage')
     mlmodel_decoder = ct.models.MLModel('TransformerDecoder.mlpackage')
 
@@ -109,7 +109,7 @@ def test3():
     print('encoder')
     encoder_output = mlmodel_encoder.predict({'encoder_input': encoder_input, 'key_mask': key_mask})['encoder_output']
 
-    print('decoder')
+    print('デコーダー')
     decoder_input = np.zeros(shape=(1, max_decoderlen), dtype=np.int32)
     decoder_input[0,:] = decoder_MSK
     rep_count = 8

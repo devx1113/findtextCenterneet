@@ -9,7 +9,7 @@ class OCR_coreml_Processer(OCR_Processer):
         super().__init__()
         import coremltools as ct
 
-        print('load')
+        print('読み込み')
         self.mlmodel_detector = ct.models.MLModel('TextDetector.mlpackage')
 
         self.mlmodel_transformer_encoder = ct.models.MLModel('TransformerEncoder.mlpackage')
@@ -60,13 +60,13 @@ class OCR_coreml_Processer(OCR_Processer):
             decoder_output = np.take_along_axis(decoder_output, maxi[None,...], axis=0)[0]
             pred_p = np.take_along_axis(pred_p, maxi[None,...], axis=0)[0]
             if np.all(pred_p[decoder_output > 0] > 0.99):
-                print(f'[{k} early stop]')
+                print(f'[{k} 早期終了]')
                 break
 
             remask = decoder_output > 0x3FFFF
             remask = np.logical_or(remask, pred_p < 0.9)
             if not np.any(remask):
-                print(f'---[{k} early stop]---')
+                print(f'---[{k} 早期終了]---')
                 break
 
             decoder_input[:,:] = np.where(remask, decoder_MSK, decoder_output)

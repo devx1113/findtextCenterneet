@@ -28,7 +28,7 @@ if len(sys.argv) > 2:
         fprop = FontProperties(fname='data/krfont/NotoSerifKR-Regular.otf')
 
 if os.path.exists("TextDetector.quant.onnx"):
-    print('quant')
+    print('量子化モデル')
     onnx_detector = onnxruntime.InferenceSession("TextDetector.quant.onnx")
 else:
     onnx_detector = onnxruntime.InferenceSession("TextDetector.onnx")
@@ -36,7 +36,7 @@ onnx_decoder = onnxruntime.InferenceSession("CodeDecoder.onnx")
     
 def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -220,7 +220,7 @@ def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     return locations, glyphfeatures
 
 def decode(glyphfeatures):
-    print("decode")
+    print("デコード")
     glyphids = []
     glyphprobs = []
     outnames = ['modulo_%d'%m for m in modulo_list]
@@ -264,7 +264,7 @@ pady = max(0, (height - im0.shape[0]) % stepy, height - im0.shape[0])
 im0 = np.pad(im0, [[0,pady],[0,padx],[0,0]], 'constant', constant_values=((255,255),(255,255),(255,255)))
 
 if twopass and (im0.shape[1] / stepx > 2 or im0.shape[0] / stepy > 2):
-    print('two-pass')
+    print('2回処理')
     s = max(im0.shape[1], im0.shape[0]) / max(width, height)
     im1 = Image.fromarray(im0).resize((int(im0.shape[1] / s), int(im0.shape[0] / s)), resample=Image.BILINEAR)
     im1 = np.asarray(im1)

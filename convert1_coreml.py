@@ -31,7 +31,7 @@ def convert1(model_size='xl'):
     decoder.eval()
 
     #########################################################################
-    print('detector')
+    print('検出器')
 
     example_input = torch.rand(1, 3, height, width)
     traced_model = torch.jit.trace(detector, example_input)
@@ -50,7 +50,7 @@ def convert1(model_size='xl'):
     mlmodel_detector.save("TextDetector.mlpackage")
 
     ############################################################################
-    print('decoder')
+    print('デコーダー')
 
     example_input = torch.rand(1, feature_dim)
     traced_model = torch.jit.trace(decoder, example_input)
@@ -90,10 +90,10 @@ def test_model():
     im = im[:height,:width,:]
     im = np.pad(im, [[0,height-im.shape[0]], [0,width-im.shape[1]], [0,0]], 'constant', constant_values=((255,255),(255,255),(255,255)))
     
-    print('test')
+    print('テスト')
     input_image = Image.fromarray(im, mode="RGB")
 
-    print('load')
+    print('読み込み')
     mlmodel_detector = ct.models.MLModel('TextDetector.mlpackage')
     mlmodel_decoder = ct.models.MLModel('CodeDecoder.mlpackage')
 

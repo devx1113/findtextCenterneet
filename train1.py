@@ -85,7 +85,7 @@ def train():
     validation_loader = DataLoader(validation_dataset, batch_size=batch, num_workers=workers, pin_memory=True)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print('using device:', device, flush=True)
+    print('使用デバイス:', device, flush=True)
     with open('log.txt','w') as wf:
         print(datetime.datetime.now(), 'using device:', device, file=wf, flush=True)
 
@@ -138,15 +138,15 @@ def train():
             loss = CoWloss(rawloss)
         return loss, rawloss
 
-    print('model', model_size, flush=True)
-    print('batch', batch, flush=True)
-    print('logstep', logstep, flush=True)
-    print('lr', lr, flush=True)
+    print('モデル', model_size, flush=True)
+    print('バッチサイズ', batch, flush=True)
+    print('ログ間隔', logstep, flush=True)
+    print('学習率', lr, flush=True)
     with open('log.txt','a') as wf:
-        print('model', model_size, file=wf, flush=True)
-        print('batch', batch, file=wf, flush=True)
-        print('logstep', logstep, file=wf, flush=True)
-        print('lr', lr, file=wf, flush=True)
+        print('モデル', model_size, file=wf, flush=True)
+        print('バッチサイズ', batch, file=wf, flush=True)
+        print('ログ間隔', logstep, file=wf, flush=True)
+        print('学習率', lr, file=wf, flush=True)
 
     last_epoch = 0
     fmask = None

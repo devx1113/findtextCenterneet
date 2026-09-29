@@ -9,9 +9,9 @@ class OCR_onnx_Processer(OCR_Processer):
         import onnxruntime
         import os
 
-        print('load')
+        print('読み込み')
         if os.path.exists("TextDetector.quant.onnx"):
-            print('quant')
+            print('量子化モデル')
             onnx_detector = onnxruntime.InferenceSession("TextDetector.quant.onnx")
         else:
             onnx_detector = onnxruntime.InferenceSession("TextDetector.onnx")
@@ -57,13 +57,13 @@ class OCR_onnx_Processer(OCR_Processer):
             decoder_output = np.take_along_axis(decoder_output, maxi[None,...], axis=0)[0]
             pred_p = np.take_along_axis(pred_p, maxi[None,...], axis=0)[0]
             if np.all(pred_p[decoder_output > 0] > 0.99):
-                print(f'[{k} early stop]')
+                print(f'[{k} 早期終了]')
                 break
 
             remask = decoder_output > 0x3FFFF
             remask = np.logical_or(remask, pred_p < 0.9)
             if not np.any(remask):
-                print(f'---[{k} early stop]---')
+                print(f'---[{k} 早期終了]---')
                 break
 
             decoder_input[:,:] = np.where(remask, decoder_MSK, decoder_output)

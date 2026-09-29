@@ -36,19 +36,19 @@ if len(sys.argv) > 2:
     for arg in sys.argv[2:]:
         if arg == 's':
             model_size = 's'
-            print('model s')
+            print('モデル S')
         elif arg == 'm':
             model_size = 'm'
-            print('model m')
+            print('モデル M')
         elif arg == 'l':
             model_size = 'l'
-            print('model l')
+            print('モデル L')
         elif arg == 'xl':
             model_size = 'xl'
-            print('model xl')
+            print('モデル XL')
         elif arg.startswith('x'):
             resize = float(arg[1:])
-            print('resize: ', resize)
+            print('リサイズ: ', resize)
 
 model = TextDetectorModel(model_size=model_size)
 data = torch.load('model.pt', map_location="cpu", weights_only=True)
@@ -121,7 +121,7 @@ def imageHist(im):
 
 def eval(ds, org_img, cut_off = 0.5, locations0 = None, glyphfeatures0 = None):
     print(org_img.shape)
-    print("test")
+    print("テスト")
 
     locations = [np.zeros(5+4)]
     glyphfeatures = [np.zeros(feature_dim, dtype=np.float32)]
@@ -345,7 +345,7 @@ input_binary += seps.tobytes()
 input_binary += int(locations.shape[0]).to_bytes(4, 'little')
 input_binary += locations[:,1:].tobytes()
 
-print('run')
+print('実行')
 result = subprocess.run('textline_detect/linedetect', input=input_binary, stdout=subprocess.PIPE).stdout
 detected_boxes = []
 p = 0

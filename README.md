@@ -1,11 +1,11 @@
-[English](README.en.md)
+[日本語版README](README.md)
 
 # findtextCenterNet
 機械学習による日本語OCR
 
 CenterNet　https://github.com/xingyizhou/CenterNet
 の手法で、
-Backbone networkに EfficientNetV2 https://github.com/google/automl/tree/master/efficientnetv2
+バックボーンネットワークには EfficientNetV2 https://github.com/google/automl/tree/master/efficientnetv2
 を使用しています。
 
 後段は、各文字の特徴量ベクトルを文として入力して、Transformerにより文字コードとして文章を出力します。
@@ -16,7 +16,7 @@ https://apps.apple.com/us/app/bunkoocr/id1611405865
 Windowsでこのモデルを使えるようにしたもの
 https://lithium03.info/product/bunkoOCR.html
 
-# Example
+# 例
 ## 手書き文字
 <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1.png" width="500">
 <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1_result.png" width="500">
@@ -52,12 +52,12 @@ make -C textline_detect
 ```
 のように認識文章が出力されます。
 
-# Details 
-## detector(step1)
+# 詳細
+## 検出器（step1）
 
 入力画像は 768x768x3
 
-![TextDetector diagram](https://github.com/lithium0003/findtextCenterNet/blob/main/img/TextDetector.drawio.svg "TextDetector")
+![TextDetectorの構成図](https://github.com/lithium0003/findtextCenterNet/blob/main/img/TextDetector.drawio.svg "TextDetector")
 
 EfficientNetV2-XLの出力(入力の1/32サイズ)と、1/4,1/8,1/16サイズとなるのブロックからの途中出力を引き出し、UpSampling2Dで、最終的に
 (1/4サイズの)192x192xNの出力を得ます。
@@ -69,25 +69,25 @@ EfficientNetV2-XLの出力(入力の1/32サイズ)と、1/4,1/8,1/16サイズと
 
 文字の特徴ベクトルの事前学習として、文字の特徴ベクトルを1文字ずつ文字コードに変換するモデルを後段に付けて学習を行います。
 
-![CodeDecoder diagram](https://github.com/lithium0003/findtextCenterNet/blob/main/img/CodeDecoder.drawio.svg "CodeDecoder")
+![CodeDecoderの構成図](https://github.com/lithium0003/findtextCenterNet/blob/main/img/CodeDecoder.drawio.svg "CodeDecoder")
 
 文字は、UTF32で1つのコードポイントとして表されるとして、1091,1093,1097での剰余を学習させて、[Chinese remainder theorem](https://ja.wikipedia.org/wiki/%E4%B8%AD%E5%9B%BD%E3%81%AE%E5%89%B0%E4%BD%99%E5%AE%9A%E7%90%86)
 により算出した値のうち、0x3FFFFより小さいものが得られた場合に有効としています。
 
 最終的には、この後段は使用せず、文字の特徴ベクトルの連続をTransformerに入力して、文字コード列を得ます。
 
-## result image
+## 結果画像
 
 例に挙げた画像では、モデルの出力は以下のようになります。
 
-| 項目 | image |
+| 項目 | 画像 |
 | --- | ------ |
 | 元画像 | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1.png" width="400"> |
 | 中心位置のヒートマップ(keyheatmap) | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1_keymap.png" width="400"> |
 | 文字の連続ライン(textline) | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1_textline.png" width="400"> |
 | 文字ブロックの分離線(separator) | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test1_separator.png" width="400"> |
 
-| 項目 | image |
+| 項目 | 画像 |
 | --- | ------ |
 | 元画像 | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test2.png" width="1400"> |
 | 中心位置のヒートマップ(keyheatmap) | <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/test2_keymap.png" width="1400"> |
@@ -101,7 +101,7 @@ EfficientNetV2-XLの出力(入力の1/32サイズ)と、1/4,1/8,1/16サイズと
 また、この例ではふりがなと親文字が検出されていますが、圏点文字(code4)と空白の次の文字(code8)についても同様に検出し、マークしておき、後段のTransformerに入れるときに
 追加して入れます。
 
-## transformer(step3)
+## Transformer（step3）
 
 step1により、入力画像は、100次元特徴ベクトルの列に変換されます。
 各文字には、縦書きか横書きかのフラグ、空白の次の文字であるかのフラグ、ふりがなであるかどうかのフラグ、ふりがなの親文字であるかのフラグ、圏点が振られているかのフラグ、
@@ -112,7 +112,7 @@ Transformerのエンコーダは最大100文字、デコーダーは最大100文
 Encoder、Decoder共に、hidden_dim=512, head_num=16, hopping_num=16とし、PositionalEncodingはsin初期化の学習ありです。
 Decoderの出力は、1091,1093,1097での剰余により符号化します。
 
-![Transformer diagram](https://github.com/lithium0003/findtextCenterNet/blob/main/img/Transformer.drawio.svg "Transformer")
+![Transformerの構成図](https://github.com/lithium0003/findtextCenterNet/blob/main/img/Transformer.drawio.svg "Transformer")
 
 
 Decoderは、SOT=1で開始し、EOT=2で終了するまでの数値をUnicodeコードポイントとして学習させます。
@@ -120,24 +120,24 @@ Decoderは、SOT=1で開始し、EOT=2で終了するまでの数値をUnicode�
 空白を埋めるのは、PAD=0です。
 
 マスクがないとき
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| 位置 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Input | SOT | t | e | s | t | EOT | PAD |
-| Output | SOT | t | e | s | t | EOT | PAD |
+| 入力 | SOT | t | e | s | t | EOT | PAD |
+| 出力 | SOT | t | e | s | t | EOT | PAD |
 
 全てマスクがあるとき
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| 位置 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Input | MSK | MSK | MSK | MSK | MSK | MSK | MSK |
-| Output | SOT | t | e | s | t | EOT | PAD |
+| 入力 | MSK | MSK | MSK | MSK | MSK | MSK | MSK |
+| 出力 | SOT | t | e | s | t | EOT | PAD |
 
 一部マスクがあるとき
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| 位置 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Input | SOT | MSK | e | MSK | t | MSK | MSK |
-| Output | SOT | t | e | s | t | EOT | PAD |
+| 入力 | SOT | MSK | e | MSK | t | MSK | MSK |
+| 出力 | SOT | t | e | s | t | EOT | PAD |
 
-# Prepare
+# 準備
 Python3でPyTorchを使用します。
 
 ```bash
@@ -188,8 +188,8 @@ CPLUS_INCLUDE_PATH=$(python3 -c 'import numpy; print(numpy.get_include())') cyth
 make -C textline_detect
 ```
 
-# Training for detector(step1)
-## Make train dataset for step1
+# 検出器（step1）の学習
+## step1の学習データ作成
 学習用データセットは、https://huggingface.co/datasets/lithium0003/findtextCenterNet_dataset/resolve/main/train_data1/ 以下にあります。
 Step1を学習する際には、データセットをWebから直接ロードして学習できるようになっていますが、帯域が必要となるのでダウンロードしてから学習することもできます。
 ダウンロードするに次のようにします。
@@ -219,20 +219,20 @@ cd models
 wget https://huggingface.co/datasets/lithium0003/findtextCenterNet_dataset/resolve/main/efficientnetv2-xl-21k.npz
 ```
 
-## Train for step1
+## step1の学習
 ```bash
 ./train1.py --lr=1e-3 --logstep=10 --output=1000 --gamma=0.95 32
 ```
 
-step1の学習には、 dataset/downloader_src 以下にソースのある downloader を用いて、 WebDataset としてデータセットをWebから直接ロードする方法と、
+step1の学習には、dataset/downloader_src 以下にソースのあるダウンローダーを用いて、WebDatasetとしてデータセットをWebから直接ロードする方法と、
 ローカルの train_data1/ フォルダに配置した学習データをロードする方法があります。
-dataset/data_detector.py の get_dataset関数の local_disk = False フラグで切り替えることができます。
+dataset/data_detector.py の get_dataset関数にある local_disk = False フラグで切り替えることができます。
 
-step1の学習時に、高速にaugmentationやデータ変換をする必要があるので、cythonで dataset/processer.pyx をコンパイルしておく必要があります。
+step1の学習時に、高速にデータ拡張やデータ変換をする必要があるので、Cythonで dataset/processer.pyx をコンパイルしておく必要があります。
 
 train1.pyは、 result1/model.pt に学習済み重みを出力します。
 
-## Test for step1
+## step1のテスト
 step1学習済みパラメータを、model.ptに置いた状態で、
 test_image1_torch.pyを実行すると推論できます。
 
@@ -240,9 +240,9 @@ test_image1_torch.pyを実行すると推論できます。
 ./test_image1_torch.py img/test1.png
 ```
 
-# Finetune for detector(step2)
+# 検出器（step2）の追加学習
 step1の文字検出器で、実際のデータを処理したときにi上手くいかない例があれば、特にその例で補充の学習を行うことができます。
-## Make train dataset for step2
+## step2の学習データ作成
 step1学習済みパラメータを、model.ptに置いた状態で、推論結果をjsonファイルとして出力します。
 
 ```bash
@@ -272,7 +272,7 @@ fine_image/fix_line_image1.py train_data2/target.png seps
 <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/fix_image_line1.png" width="400">
 <img src="https://github.com/lithium0003/findtextCenterNet/blob/main/img/fix_image_line2.png" width="400">
 
-## Train for step2(finetune detector)
+## step2の学習（検出器の追加学習）
 ```bash
 ./train1.py --lr=1e-4 --logstep=10 --output=1000 --weight1=0.5 --weight2=1.0 32
 ```
@@ -280,7 +280,7 @@ fine_image/fix_line_image1.py train_data2/target.png seps
 step2の学習には、step1で使用したデータに加えて、train_data2/ フォルダ以下に用意したデータを使用して追加学習します。
 学習を始める前に、 result2/model.pt として、step1の結果の重みデータを用意しておきます。
 
-## Test for step2
+## step2のテスト
 step2学習済みパラメータを、model.ptに置いた状態で、
 test_image1_torch.pyを実行すると推論できます。
 
@@ -288,7 +288,7 @@ test_image1_torch.pyを実行すると推論できます。
 ./test_image1_torch.py img/test1.png
 ```
 
-# Training for Transformer(step3) 
+# Transformer（step3）の学習
 step3の学習用データセットは、
 * https://huggingface.co/datasets/lithium0003/findtextCenterNet_dataset/resolve/main/train_data3.tar.gz 
 * https://huggingface.co/datasets/lithium0003/findtextCenterNet_dataset/resolve/main/train_data4.tar.gz 
@@ -327,7 +327,7 @@ cd train_data3
 python3 make_data.py
 ```
 
-### Finetune用画像からのstep3の学習データtrain_data4の作成
+### 追加学習用画像からstep3の学習データtrain_data4を作成
 補充の学習データとして、手動で修正したtrain_data2があれば、そのデータもTransformerの学習に使用できます。
 train_data2をtrain_data4としてコピーした上で、次にように変換します。
 この変換には、textline_detect/linedetect による文の方向検索のモジュールのコンパイルが事前に必要です。
@@ -335,7 +335,7 @@ train_data2をtrain_data4としてコピーした上で、次にように変換�
 fine_image/process_image4_torch.py train_data4/target.png
 ```
 
-## Train for step3
+## step3の学習
 ```bash
 ./train3.py 1024
 ```
@@ -345,7 +345,7 @@ step3の学習では、Transformerを、wikipediaや青空文庫などの自然�
 
 学習済み重みは、result3/model.pt に保存されます。
 
-## Test for step3
+## step3のテスト
 学習済みパラメータを、model.pt, model3.pt に置いた状態で、
 test_image3_torch.pyを実行すると推論できます。
 
@@ -354,24 +354,24 @@ test_image3_torch.pyを実行すると推論できます。
 ```
 
 
-# Reference 
-- Objects as Points
+# 参考文献
+- Objects as Points（物体を点として扱う手法）
 https://arxiv.org/abs/1904.07850
 - EfficientNetV2
 https://arxiv.org/abs/2104.00298
 - PyTorchではじめるAI開発　(p.256-)
 https://www.amazon.co.jp/dp/B096WWVFJN
-- B2T Connection: Serving Stability and Performance in Deep Transformers
+- B2T Connection: Serving Stability and Performance in Deep Transformers（深層Transformerの安定性と性能）
 https://arxiv.org/abs/2206.00330
-- Schedule-Free Learning
+- Schedule-Free Learning（スケジュール不要の学習）
 https://github.com/facebookresearch/schedule_free
-- Differential Transformer
+- Differential Transformer（差分Transformer）
 https://arxiv.org/abs/2410.05258
-- Understanding How Positional Encodings Work in Transformer Model
+- Understanding How Positional Encodings Work in Transformer Model（Transformerの位置エンコーディング）
 https://aclanthology.org/2024.lrec-main.1478/
-- Mask-Predict: Parallel Decoding of Conditional Masked Language Models
+- Mask-Predict: Parallel Decoding of Conditional Masked Language Models（条件付きマスク言語モデルの並列デコード）
 https://arxiv.org/abs/1904.09324
-- Attending to Future Tokens For Bidirectional Sequence Generation
+- Attending to Future Tokens For Bidirectional Sequence Generation（双方向系列生成）
 https://arxiv.org/abs/1908.05915
-- Large Language Diffusion Models
+- Large Language Diffusion Models（大規模言語拡散モデル）
 https://arxiv.org/abs/2502.09992

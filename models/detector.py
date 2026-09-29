@@ -32,11 +32,11 @@ def load_weight(model: EfficientNet, weight_path: str) -> EfficientNet:
     import os
 
     if not os.path.exists(weight_path):
-        print('not found:', weight_path)
+        print('見つかりません:', weight_path)
         return model
 
     with np.load(weight_path) as weights:
-        print('loading weights')
+        print('重みを読み込み中')
         def apply_weights(func, base, tag=None):
             if isinstance(func, Conv2d):
                 state_dict = func.state_dict()

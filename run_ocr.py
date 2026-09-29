@@ -11,13 +11,13 @@ if os.path.exists('model.pt') and os.path.exists('model3.pt'):
     models.append('torch')
 
 if models[0] == 'coreml':
-    print('coreml')
+    print('Core ML')
     from process_ocr_coreml import OCR_coreml_Processer as OCR_Processer
 elif models[0] == 'onnx':
-    print('onnx')
+    print('ONNX')
     from process_ocr_onnx import OCR_onnx_Processer as OCR_Processer
 elif models[0] == 'torch':
-    print('torch')
+    print('PyTorch')
     from process_ocr_torch import OCR_torch_Processer as OCR_Processer
 
 processer = OCR_Processer()

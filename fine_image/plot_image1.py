@@ -26,7 +26,7 @@ if len(sys.argv) > 2:
     for arg in sys.argv[2:]:
         if arg == 'kr':
             fprop = FontProperties(fname='data/krfont/NotoSerifKR-Regular.otf')
-            print('kr font')
+            print('韓国語フォント')
 
 im0 = Image.open(target_file).convert('RGB')
 
